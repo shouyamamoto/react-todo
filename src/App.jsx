@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { InputTodo } from "./components/Input-todo";
+import { IncompleteTodos } from "./components/IncompleteTodos";
+import { CompleteTodos } from "./components/completeTodos";
 import "./styles.css";
 
 export const App = () => {
   const [todoText, setTodoText] = useState("");
-  const [incomplateTodos, setIncomplateTodos] = useState([]);
-  const [complateTodos, setComplateTodos] = useState([]);
+  const [incompleteTodos, setIncompleteTodos] = useState([]);
+  const [completeTodos, setCompleteTodos] = useState([]);
 
   const onChangeTodoText = (event) => {
     setTodoText(event.target.value);
@@ -12,72 +15,48 @@ export const App = () => {
 
   const onClickAdd = () => {
     if (todoText === "") return;
-    const newTodos = [...incomplateTodos, todoText];
-    setIncomplateTodos(newTodos);
+    const newTodos = [...incompleteTodos, todoText];
+    setIncompleteTodos(newTodos);
     setTodoText("");
   };
 
   const onClickDelete = (index) => {
-    const newTodos = [...incomplateTodos];
+    const newTodos = [...incompleteTodos];
     newTodos.splice(index, 1);
-    setIncomplateTodos(newTodos);
+    setIncompleteTodos(newTodos);
   };
 
   const onClickComplete = (index) => {
-    const newIncompleteTodos = [...incomplateTodos];
+    const newIncompleteTodos = [...incompleteTodos];
     newIncompleteTodos.splice(index, 1);
 
-    const newCompleteTodos = [...complateTodos, incomplateTodos[index]];
-    setIncomplateTodos(newIncompleteTodos);
-    setComplateTodos(newCompleteTodos);
+    const newCompleteTodos = [...completeTodos, incompleteTodos[index]];
+    setIncompleteTodos(newIncompleteTodos);
+    setCompleteTodos(newCompleteTodos);
   };
 
   const onClickReturn = (index) => {
-    const newCompleteTodos = [...complateTodos];
+    const newCompleteTodos = [...completeTodos];
     newCompleteTodos.splice(index, 1);
 
-    const newIncompleteTodos = [...incomplateTodos, complateTodos[index]];
-    setComplateTodos(newCompleteTodos);
-    setIncomplateTodos(newIncompleteTodos);
+    const newIncompleteTodos = [...incompleteTodos, completeTodos[index]];
+    setCompleteTodos(newCompleteTodos);
+    setIncompleteTodos(newIncompleteTodos);
   };
 
   return (
     <>
-      <div className="input-area">
-        <input
-          placeholder="todoを入力"
-          value={todoText}
-          onChange={onChangeTodoText}
-        />
-        <button onClick={onClickAdd}>追加</button>
-      </div>
-      <div className="incomplate-area">
-        <p className="title">未完了のTODO</p>
-        <ul>
-          {incomplateTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickComplete(index)}>完了</button>
-                <button onClick={() => onClickDelete(index)}>削除</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="complate-area">
-        <p className="title">完了したTODO</p>
-        <ul>
-          {complateTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickReturn(index)}>戻す</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
+      <InputTodo
+        todoText={todoText}
+        onChange={onChangeTodoText}
+        onClick={onClickAdd}
+      />
+      <IncompleteTodos
+        todos={incompleteTodos}
+        onClick={onClickComplete}
+        onClickDelete={onClickDelete}
+      />
+      <CompleteTodos todos={completeTodos} onClickReturn={onClickReturn} />
     </>
   );
 };
